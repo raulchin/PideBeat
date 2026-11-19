@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #101110;
+  --color-lime: #c5f562;
+  --color-muted: #a6ada3;
+  --color-line: #30362d;
+  --font-sans: "Trebuchet MS", "Segoe UI", sans-serif;
+}
+@layer base {
+  :root { color-scheme: dark; background: var(--color-ink); color: #f3f5ee; }
+  body { margin: 0; min-width: 360px; }
+  button, a, input, select { -webkit-tap-highlight-color: transparent; }
+  button, a { touch-action: manipulation; }
+  button { cursor: pointer; }
+  button:disabled { cursor: wait; opacity: .55; }
+  a, button, input, select { outline-offset: 5px; }
+  :focus-visible { outline: 2px solid var(--color-lime); }
+  label { display: block; font-size: .875rem; font-weight: 600; }
+  input, select { display: block; width: 100%; margin-top: .6rem; min-height: 48px; border: 1px solid var(--color-line); border-radius: 8px; padding: .8rem 1rem; background: #151914; color: #f3f5ee; font: inherit; font-weight: 400; }
+  input::placeholder { color: #848d80; }
+  input:disabled { opacity: .65; }
+  select { width: auto; max-width: 100%; min-height: 44px; padding: .5rem .75rem; }
+  ::selection { background: var(--color-lime); color: #101110; }
+}
+@layer components {
+  .eyebrow { margin-bottom: 1.25rem; color: var(--color-lime); font-size: .65rem; letter-spacing: .18em; font-weight: 700; }
+  .button { display: inline-flex; min-height: 46px; align-items: center; justify-content: center; gap: .8rem; border: 1px solid transparent; border-radius: 7px; padding: .75rem 1.1rem; font-size: .875rem; font-weight: 700; transition: background .15s, border-color .15s; }
+  .primary { background: var(--color-lime); color: #141b0b; }
+  .primary:hover:not(:disabled) { background: #d6ff8d; }
+  .secondary { border-color: var(--color-line); background: #1a1e18; color: #e4e9de; }
+  .secondary:hover { border-color: #879b71; }
+  .danger { border-color: #704236; color: #ffbaaa; background: #281c18; }
+  .panel { border: 1px solid var(--color-line); border-radius: 14px; padding: 1.5rem; background: #181c16; }
+  .event-card:hover { border-color: var(--color-lime); }
+  .request-card { border-radius: 10px; }
+  .notice { margin: 1rem 0; border-left: 3px solid var(--color-lime); background: #253019; padding: 1rem; color: #e5f4cf; font-size: .875rem; line-height: 1.6; overflow-wrap: anywhere; }
+  .notice-error { border-color: #ffa68c; background: #33221c; color: #ffd0bd; }
+  .badge { display: inline-flex; border: 1px solid #48513f; border-radius: 4px; padding: .35rem .5rem; color: #b4bcae; font-size: .6rem; letter-spacing: .1em; }
+  .badge.active { border-color: #4d652c; background: #253019; color: var(--color-lime); }
+  .hero-title { font-size: clamp(3rem, 6.5vw, 5.3rem); line-height: 1.04; font-weight: 800; letter-spacing: -.065em; }
+  .record-art { position: relative; display: grid; place-items: center; padding: 1rem; min-height: 320px; }
+  .record { display: grid; place-items: center; width: min(100%, 350px); aspect-ratio: 1; border-radius: 50%; border: 2px solid #363b31; background: repeating-radial-gradient(circle at center, #151713 0px, #151713 4px, #30352b 5px, #131610 6px); box-shadow: 14px 20px 0 #20251b; transform: rotate(-15deg); }
+  .record-label { display: grid; place-items: center; position: relative; width: 40%; height: 40%; background: var(--color-lime); border-radius: 50%; color: #17200d; font-weight: 900; font-size: 2rem; line-height: .95; letter-spacing: -.08em; }
+  .record-label i { position: absolute; top: 48%; left: 48%; width: 9px; height: 9px; background: #111; border: 2px solid #e4ffa9; border-radius: 50%; }
+  .record-tag { position: absolute; right: 0; bottom: 10px; padding: 1rem 1.4rem; background: #e8ebdd; color: #192014; transform: rotate(5deg); font-size: .6rem; letter-spacing: .1em; }
+  .record-tag strong { display: block; margin-top: .3rem; font-size: 1rem; letter-spacing: -.02em; }
+  .guest-shell { max-width: 510px; min-height: 100dvh; margin: auto; padding: 1.7rem 1.25rem 3rem; }
+  .guest-top { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 3rem; }
+  .guest-panel { border-top: 1px solid #5e7046; padding: 2rem 0; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }

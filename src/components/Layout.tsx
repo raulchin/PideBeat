@@ -1,0 +1,29 @@
+import { Link, Outlet } from 'react-router'
+import { useState } from 'react'
+import { brand } from '../config/brand'
+import { supabase } from '../lib/supabase'
+import { useSession } from '../features/auth/session'
+import { BrandLogo } from './BrandLogo'
+
+export function Layout() {
+  const { session } = useSession()
+  const [error, setError] = useState('')
+  async function signOut() {
+    const { error } = await supabase.auth.signOut()
+    if (error) setError('No se pudo cerrar sesión. Inténtalo de nuevo.')
+  }
+  return <div className="min-h-screen">
+    <header className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-6 sm:px-8">
+      <Link to="/" className="min-w-0" aria-label={`${brand.name}, inicio`}><BrandLogo decorative /></Link>
+      <nav className="flex items-center gap-4 text-sm" aria-label="Principal">
+        {session ? <><Link to="/dj/dashboard">Mis eventos</Link><button className="text-muted" onClick={() => void signOut()}>Salir</button></> : <Link className="button secondary" to="/dj/login">Acceso DJ <span aria-hidden="true">↗</span></Link>}
+      </nav>
+    </header>
+    <main className="mx-auto max-w-6xl px-5 pb-16 pt-8 sm:px-8">{error && <Notice error>{error}</Notice>}<Outlet /></main>
+    <footer className="mx-auto flex max-w-6xl flex-wrap justify-between gap-3 border-t border-line px-5 py-6 text-xs text-muted sm:px-8"><span>{brand.name} / La música la hacemos entre todos.</span><span>Sin instalaciones. Solo ritmo.</span></footer>
+  </div>
+}
+export function Notice({ children, error = false }: { children: React.ReactNode; error?: boolean }) {
+  return <p role={error ? 'alert' : 'status'} className={`notice ${error ? 'notice-error' : ''}`}>{children}</p>
+}
+export function Loading() { return <p role="status" className="py-12 text-muted">Conectando con tu música…</p> }
