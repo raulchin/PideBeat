@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router'
+import { Link, useParams, useSearchParams } from 'react-router'
 import { supabase } from '../../lib/supabase'
 import type { Event } from '../../types/database'
 import { Loading, Notice } from '../../components/Layout'
@@ -11,6 +11,9 @@ export function EventPage() {
   return <EventDetail key={id} id={id} />
 }
 function EventDetail({ id }: { id: string }) {
+  const [searchParams] = useSearchParams()
+  const cabin = searchParams.get('modo') === 'cabina'
+  const eventPath = `/dj/event/${id}`
   const [event, setEvent] = useState<Event | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -38,11 +41,26 @@ function EventDetail({ id }: { id: string }) {
   }
   if (loading) return <Loading />
   return <>
-    <Link className="text-sm text-muted" to="/dj/dashboard">← Mis eventos</Link>
+    <Link className="text-sm text-muted" to="/dj/dashboard">{cabin ? '← Volver a Mis eventos' : '← Mis eventos'}</Link>
     {error && <Notice error>{error}</Notice>}
     {!event ? <button className="button secondary mt-6" onClick={() => setAttempt(value => value + 1)}>Reintentar</button> : <>
-      <div className="mb-10 mt-6 flex flex-wrap items-start justify-between gap-5"><div className="min-w-0"><span className={`badge ${event.is_active ? 'active' : ''}`}>{event.is_active ? 'EN VIVO / RECIBIENDO SOLICITUDES' : 'EVENTO CERRADO'}</span><h1 className="mt-4 break-words text-4xl font-bold tracking-tight sm:text-5xl">{event.name}</h1></div>{event.is_active && <button className="button danger" disabled={busy} onClick={() => void close()}>{busy ? 'Cerrando…' : 'Cerrar evento'}</button>}</div>
-      <div className="grid items-start gap-10 lg:grid-cols-[340px_minmax(0,1fr)]"><EventQr code={event.public_code} /><RequestInbox eventId={id} /></div>
+      <div className="mb-10 mt-6 flex flex-wrap items-start justify-between gap-5">
+        <div className="min-w-0">
+          {cabin && <p className="eyebrow">MODO CABINA DJ</p>}
+          <span className={`badge ${event.is_active ? 'active' : ''}`}>{event.is_active ? 'EN VIVO / RECIBIENDO SOLICITUDES' : 'EVENTO CERRADO'}</span>
+          <h1 className="mt-4 break-words text-4xl font-bold tracking-tight sm:text-5xl">{event.name}</h1>
+        </div>
+        <div className="flex flex-wrap gap-3">
+          <Link className={`button ${cabin ? 'secondary' : 'primary'}`} to={cabin ? eventPath : `${eventPath}?modo=cabina`}>
+            {cabin ? 'Volver al panel' : 'Modo Cabina'}
+          </Link>
+          {!cabin && event.is_active && <button className="button danger" disabled={busy} onClick={() => void close()}>{busy ? 'Cerrando…' : 'Cerrar evento'}</button>}
+        </div>
+      </div>
+      <div className={cabin ? undefined : 'grid items-start gap-10 lg:grid-cols-[340px_minmax(0,1fr)]'}>
+        {!cabin && <EventQr code={event.public_code} eventName={event.name} />}
+        <RequestInbox eventId={id} cabin={cabin} />
+      </div>
     </>}
   </>
 }

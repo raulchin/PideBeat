@@ -50,3 +50,26 @@
   .guest-panel { border-top: 1px solid #5e7046; padding: 2rem 0; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; } }
+
+.event-qr-print { display: none; }
+
+@media print {
+  @page pidebeat-qr { margin: 0; }
+  :root:has(.event-qr-print) { color-scheme: light; background: #fff; }
+  body:has(> .event-qr-print) { min-width: 0; }
+  body:has(> .event-qr-print) > #root { display: none; }
+  .event-qr-print {
+    display: block;
+    page: pidebeat-qr;
+    max-width: 160mm;
+    margin: 12mm auto;
+    padding-inline: 8mm;
+    break-inside: avoid;
+    color: #000;
+    text-align: center;
+    overflow-wrap: anywhere;
+  }
+  .event-qr-print h1 { margin-top: 3mm; font-size: 22pt; font-weight: 700; }
+  .event-qr-print svg { display: block; width: 80mm; max-width: 100%; height: auto; margin: 5mm auto; }
+  .event-qr-print-url { margin-top: 2mm; font-size: 10pt; }
+}

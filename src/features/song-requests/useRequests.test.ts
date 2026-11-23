@@ -81,6 +81,31 @@ describe('useRequests', () => {
     expect(result.current.loading).toBe(false)
   })
 
+  it('separa el historial de las llegadas nuevas y no repite avisos tras refrescar', async () => {
+    const live = channelMock()
+    const initial = request('historial')
+    const liveRow = request('en-vivo')
+    const recovered = request('recuperada')
+    realtime.channel.mockReturnValue(live.channel)
+    vi.mocked(loadRequests).mockResolvedValue([initial])
+    const { result } = renderHook(() => useRequests('event-a'))
+    await waitFor(() => expect(result.current.loading).toBe(false))
+    expect(result.current.newRequestIds.size).toBe(0)
+
+    act(() => {
+      live.emit('UPDATE', { ...initial, status: 'ATENDIDA' })
+      live.emit('INSERT', liveRow)
+      live.emit('INSERT', liveRow)
+      live.emit('INSERT', request('de-otro-evento', { event_id: 'event-b' }))
+    })
+    expect([...result.current.newRequestIds]).toEqual(['en-vivo'])
+    vi.mocked(loadRequests).mockResolvedValue([initial, liveRow, recovered])
+    act(() => { live.status('SUBSCRIBED') })
+    await waitFor(() => expect([...result.current.newRequestIds]).toEqual(['en-vivo', 'recuperada']))
+    await act(async () => { await result.current.refresh() })
+    expect([...result.current.newRequestIds]).toEqual(['en-vivo', 'recuperada'])
+  })
+
   it('resincroniza al suscribirse y al reconectar conservando el refresco manual', async () => {
     const live = channelMock()
     realtime.channel.mockReturnValue(live.channel)

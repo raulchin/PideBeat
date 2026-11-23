@@ -70,6 +70,12 @@ En **Mis eventos**, abre el menú **⋮** de la tarjeta. **Editar nombre** conse
 
 Para habilitar estas opciones en una instalación existente, prueba primero la [migración de gestión de eventos](supabase/migrations/20261119000000_event_management.sql) en Supabase local o de pruebas. Antes de publicar el frontend, aplica **solo esa migración nueva**. Si la inicial se aplicó manualmente con el SQL Editor, usa el mismo método para este archivo; no vuelvas a ejecutar la inicial. El script no borra filas existentes al aplicarse. Mantiene Realtime para nuevas solicitudes y cambios de estado, y deja de publicar borrados para proteger el aislamiento. No requiere variables nuevas ni redesplegar las Edge Functions.
 
+## Modo Cabina DJ
+
+Abre **Modo Cabina** desde una tarjeta de **Mis eventos** o desde el detalle. Verás las solicitudes del mismo evento con texto grande, aviso de llegada y botones para marcar como atendida o rechazar. **Volver al panel** recupera el QR y el detalle normal sin cambiar de evento; **Volver a Mis eventos** regresa al listado.
+
+El sonido empieza desactivado cada vez que entras a la cabina. Pulsa el control de **Sonido de solicitudes** para activarlo y ajusta **Volumen**. Solo avisa de llegadas nuevas (varias seguidas pueden compartir un aviso). Si el sistema silencia o suspende el audio, las solicitudes siguen visibles; desactiva y activa de nuevo el sonido con la página abierta. No requiere migraciones ni variables nuevas.
+
 ## Desarrollo
 
 Requisitos: **Node.js 22.12.0 o superior** y npm. Para reproducir el entorno de despliegue, usar Node 22.x. Supabase CLI requiere acceso al proyecto remoto; Docker solo es necesario para el stack Supabase local. Las pruebas nativas necesitan PostgreSQL, `psql` y pgTAP.

@@ -71,6 +71,8 @@ export function EventCard({ event, onRename, onDelete }: Props) {
   return <article className="panel event-card relative">
     <div className="flex items-start justify-between gap-3">
       <span className={`badge ${event.is_active ? 'active' : ''}`}>{event.is_active ? 'EN VIVO' : 'CERRADO'}</span>
+      <Link to={`/dj/event/${event.id}?modo=cabina`} aria-label={`Modo Cabina para ${event.name}`}
+        className="absolute top-3 right-16 z-10 inline-flex min-h-11 items-center rounded-lg border border-line bg-ink px-2 text-xs text-lime hover:border-lime">Modo Cabina</Link>
       <div ref={menu} className="absolute right-4 top-3 z-10"
         onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) setMenuOpen(false) }}
         onKeyDown={event => { if (event.key === 'Escape' && menuOpen) closeControls() }}>
