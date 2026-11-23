@@ -64,6 +64,12 @@ Las pruebas automatizadas no sustituyen la validación de extremo a extremo con 
 | `supabase/BACKEND.md` | Contratos, seguridad y resultados backend detallados |
 | `vercel.json` | Rewrite SPA y cabeceras del frontend |
 
+## Editar y eliminar eventos
+
+En **Mis eventos**, abre el menú **⋮** de la tarjeta. **Editar nombre** conserva el identificador, el QR, el estado y las solicitudes. El enlace publicado muestra el nombre nuevo al volver a cargarlo. **Eliminar evento** requiere confirmación y borra el evento y sus solicitudes; el QR deja de funcionar. Si quieres dejar de recibir solicitudes sin perder el historial, usa **Cerrar evento**.
+
+Para habilitar estas opciones en una instalación existente, prueba primero la [migración de gestión de eventos](supabase/migrations/20261119000000_event_management.sql) en Supabase local o de pruebas. Antes de publicar el frontend, aplica **solo esa migración nueva**. Si la inicial se aplicó manualmente con el SQL Editor, usa el mismo método para este archivo; no vuelvas a ejecutar la inicial. El script no borra filas existentes al aplicarse. Mantiene Realtime para nuevas solicitudes y cambios de estado, y deja de publicar borrados para proteger el aislamiento. No requiere variables nuevas ni redesplegar las Edge Functions.
+
 ## Desarrollo
 
 Requisitos: **Node.js 22.12.0 o superior** y npm. Para reproducir el entorno de despliegue, usar Node 22.x. Supabase CLI requiere acceso al proyecto remoto; Docker solo es necesario para el stack Supabase local. Las pruebas nativas necesitan PostgreSQL, `psql` y pgTAP.

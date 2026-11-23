@@ -1,19 +1,24 @@
-import { useEffect, useState, type FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { useNavigate } from 'react-router'
 import { supabase } from '../../lib/supabase'
 import { validateText, errorMessage } from '../../lib/validation'
 import type { Event } from '../../types/database'
 import { Loading, Notice } from '../../components/Layout'
+import { EventCard } from './EventCard'
 
 export function DashboardPage() {
   const [events, setEvents] = useState<Event[]>([])
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
+  const [message, setMessage] = useState('')
   const [attempt, setAttempt] = useState(0)
+  const revision = useRef(0)
+  const heading = useRef<HTMLHeadingElement>(null)
   const navigate = useNavigate()
   useEffect(() => {
     let active = true
+    const version = revision.current
     async function load() {
       try {
         const workspace = await supabase.rpc('ensure_personal_workspace')
@@ -26,13 +31,24 @@ export function DashboardPage() {
           rows.push(...data)
           if (data.length < 500) break
         }
-        if (active) { setEvents(rows); setError('') }
-      } catch (error) { if (active) setError(errorMessage(error)) }
+        if (active && version === revision.current) { setEvents(rows); setError('') }
+      } catch (error) { if (active && version === revision.current) setError(errorMessage(error)) }
       finally { if (active) setLoading(false) }
     }
     void load()
     return () => { active = false }
   }, [attempt])
+  function rename(id: string, name: string) {
+    revision.current++
+    setEvents(rows => rows.map(row => row.id === id ? { ...row, name } : row))
+    setMessage('Nombre actualizado. El QR sigue siendo el mismo.')
+  }
+  function remove(id: string) {
+    revision.current++
+    setEvents(rows => rows.filter(row => row.id !== id))
+    setMessage('Evento eliminado.')
+    heading.current?.focus()
+  }
   async function create(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (busy) return
@@ -49,14 +65,18 @@ export function DashboardPage() {
   }
   return <>
     <p className="eyebrow">TU ESPACIO / CABINA DJ</p>
-    <div className="mb-10 flex flex-wrap items-end justify-between gap-4"><div><h1 className="text-4xl font-bold tracking-tight sm:text-5xl">Mis eventos<span className="text-lime">.</span></h1><p className="mt-3 text-muted">Abre la pista. Escucha a tu público.</p></div><button className="button secondary" onClick={() => setAttempt(value => value + 1)}>Actualizar eventos</button></div>
+    <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
+      <div className="min-w-0 max-w-full">
+        <h1 ref={heading} tabIndex={-1} className="text-4xl font-bold tracking-tight sm:text-5xl">Mis eventos<span className="text-lime">.</span></h1>
+        <p className="mt-3 text-muted">Abre la pista. Escucha a tu público.</p>
+      </div>
+      <button className="button secondary" onClick={() => { setMessage(''); setAttempt(value => value + 1) }}>Actualizar eventos</button>
+    </div>
     {error && <Notice error>{error}</Notice>}
+    {message && <Notice>{message}</Notice>}
     <div className="grid items-start gap-8 md:grid-cols-[minmax(0,1fr)_320px]">
       <section aria-label="Tus eventos" className="space-y-4">
-        {loading ? <Loading /> : !events.length ? <div className="panel py-16"><p className="mb-3 text-3xl">Tu pista está por estrenar.</p><p className="text-muted">Crea tu primer evento y comparte el QR con tus invitados.</p></div> : events.map(event => <Link key={event.id} to={`/dj/event/${event.id}`} className="panel event-card block">
-          <div className="flex items-center justify-between gap-4"><span className={`badge ${event.is_active ? 'active' : ''}`}>{event.is_active ? 'EN VIVO' : 'CERRADO'}</span><span className="text-muted" aria-hidden="true">↗</span></div>
-          <h2 className="my-5 break-words text-2xl font-semibold">{event.name}</h2><p className="text-xs text-muted">{new Date(event.created_at).toLocaleString('es')}</p>
-        </Link>)}
+        {loading ? <Loading /> : !events.length ? <div className="panel py-16"><p className="mb-3 text-3xl">Tu pista está por estrenar.</p><p className="text-muted">Crea tu primer evento y comparte el QR con tus invitados.</p></div> : events.map(event => <EventCard key={event.id} event={event} onRename={rename} onDelete={remove} />)}
       </section>
       <form onSubmit={event => void create(event)} className="panel space-y-5 md:sticky md:top-6">
         <p className="eyebrow">NUEVA SESIÓN</p><h2 className="text-2xl font-semibold">Dale nombre a la noche.</h2>

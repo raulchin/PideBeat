@@ -31,6 +31,8 @@ export type Database = {
       ensure_personal_workspace: { Args: Record<string, never>; Returns: string }
       create_event: { Args: { p_name: string }; Returns: Event }
       close_event: { Args: { p_event_id: string }; Returns: undefined }
+      rename_event: { Args: { p_event_id: string; p_name: string }; Returns: string }
+      delete_event: { Args: { p_event_id: string }; Returns: undefined }
     }
     Enums: { [_ in never]: never }
     CompositeTypes: { [_ in never]: never }
