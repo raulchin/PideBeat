@@ -2,7 +2,7 @@
   "compilerOptions": { "strict": true },
   "nodeModulesDir": "none",
   "tasks": {
-    "check": "deno check get-public-event/index.ts submit-song-request/index.ts _shared/http_test.ts",
+    "check": "deno check get-public-event/index.ts submit-song-request/index.ts public-raffle/index.ts _shared/*_test.ts",
     "test": "deno test --allow-env _shared/"
   }
 }

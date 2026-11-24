@@ -76,6 +76,18 @@ Abre **Modo Cabina** desde una tarjeta de **Mis eventos** o desde el detalle. Ve
 
 El sonido empieza desactivado cada vez que entras a la cabina. Pulsa el control de **Sonido de solicitudes** para activarlo y ajusta **Volumen**. Solo avisa de llegadas nuevas (varias seguidas pueden compartir un aviso). Si el sistema silencia o suspende el audio, las solicitudes siguen visibles; desactiva y activa de nuevo el sonido con la página abierta. No requiere migraciones ni variables nuevas.
 
+## PideBeat Sorteos
+
+Desde el detalle de un evento, abre **Sorteo**, guarda el premio, la descripción, las condiciones y la hora local de cierre. **Activar sorteo** abre las inscripciones y fija los datos guardados. Solo se admite un sorteo por evento. Completar una solicitud musical posterior a la activación abre la opción **Quiero participar en el sorteo**. La canción no inscribe a nadie por sí sola: cada invitado puede rechazar la invitación o confirmar con su apodo y aceptación explícita.
+
+El propietario consulta participantes y cierra inscripciones. Vencer el plazo o cerrar el evento también impide nuevas altas. **Realizar sorteo** elige uniformemente en el servidor y guarda un único resultado; un reintento devuelve el mismo ganador. Sin participantes, no se genera resultado. **Proyectar ganador** abre una vista privada con solo el nombre o apodo ganador y el premio. Eliminar un evento borra también su sorteo, participaciones y resultado.
+
+Los controles de duplicados usan un recibo de canción, un identificador aleatorio por navegador y una cuota por origen. No se usan cuentas de invitado ni se solicitan teléfonos o correos. Una Wi-Fi compartida no se identifica como una sola persona, aunque comparte cuota. No es una verificación de identidad: cambiar de navegador, borrar el almacenamiento o cambiar de red puede afectar la deduplicación o la validación del recibo. En pantalla se informa que el apodo ganador puede proyectarse. Define las condiciones y el plazo de retención apropiados para tu evento antes de activar el módulo.
+
+**Instalación en un entorno de pruebas:** aplica en orden [`20261124000000_raffles.sql`](supabase/migrations/20261124000000_raffles.sql) y [`20261124000001_public_raffle.sql`](supabase/migrations/20261124000001_public_raffle.sql) después de las migraciones previas. Si usaste el SQL Editor para instalarlas, no repitas los scripts anteriores. Después despliega `public-raffle` (por ejemplo, `supabase functions deploy public-raffle --use-api --project-ref TU_REFERENCIA` con la CLI documentada). Reutiliza `ALLOWED_ORIGINS`, `REQUEST_ORIGIN_SECRET` y la misma cabecera de origen confiable que verifican las solicitudes musicales. No redespliegues ni cambies las funciones musicales por este módulo.
+
+**Verificación antes de publicar:** en una base desechable, ejecuta `supabase test db` y las pruebas Edge (`deno task test` desde `supabase/functions`). La prueba de conexiones simultáneas se ejecuta con `npx --yes deno@2.9.6 test --allow-env=TEST_DATABASE_URL --allow-run=psql supabase/tools/raffle_concurrency_test.ts` apuntando solo a esa base de pruebas. Con dos DJs y dos dispositivos, verifica el aislamiento, que rechazar la invitación no altera la canción, que una participación no se duplica y que la proyección recupera el mismo ganador al recargar. No hay pagos ni venta de boletos.
+
 ## Desarrollo
 
 Requisitos: **Node.js 22.12.0 o superior** y npm. Para reproducir el entorno de despliegue, usar Node 22.x. Supabase CLI requiere acceso al proyecto remoto; Docker solo es necesario para el stack Supabase local. Las pruebas nativas necesitan PostgreSQL, `psql` y pgTAP.

@@ -7,6 +7,8 @@ import { LoginPage } from '../features/auth/LoginPage'
 import { DashboardPage } from '../features/events/DashboardPage'
 import { EventPage } from '../features/events/EventPage'
 import { GuestPage } from '../features/song-requests/GuestPage'
+import { RafflePage } from '../features/raffles/RafflePage'
+import { RaffleWinnerPage } from '../features/raffles/RaffleWinnerPage'
 
 function PrivateRoute() {
   const { session, loading, error } = useSession()
@@ -31,12 +33,16 @@ export function App() {
   if (!configured) return <ConfigurationPage />
   return <Routes>
     <Route path="/e/:publicCode" element={<GuestPage />} />
+    <Route element={<PrivateRoute />}>
+      <Route path="/dj/event/:id/sorteo/ganador" element={<RaffleWinnerPage />} />
+    </Route>
     <Route element={<Layout />}>
       <Route index element={<HomePage />} />
       <Route path="/dj/login" element={<LoginPage />} />
       <Route element={<PrivateRoute />}>
         <Route path="/dj/dashboard" element={<DashboardPage />} />
         <Route path="/dj/event/:id" element={<EventPage />} />
+        <Route path="/dj/event/:id/sorteo" element={<RafflePage />} />
       </Route>
       <Route path="*" element={<section className="py-20"><p className="eyebrow">404 / FUERA DE LA PISTA</p><h1 className="mb-8 text-4xl font-bold">Esta página no está en la sesión.</h1><Link className="button primary" to="/">Volver al inicio</Link></section>} />
     </Route>

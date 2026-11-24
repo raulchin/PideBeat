@@ -56,3 +56,8 @@ entrypoint = "./functions/get-public-event/index.ts"
 enabled = true
 verify_jwt = false
 entrypoint = "./functions/submit-song-request/index.ts"
+
+[functions.public-raffle]
+enabled = true
+verify_jwt = false
+entrypoint = "./functions/public-raffle/index.ts"

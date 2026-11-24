@@ -101,7 +101,7 @@ export function EventCard({ event, onRename, onDelete }: Props) {
       onSubmit={event => void save(event)} onKeyDown={event => { if (event.key === 'Escape' && !saving.current) closeControls() }}>
       {action === 'rename'
         ? <label>Nuevo nombre del evento<input name="name" defaultValue={event.name} required maxLength={240} disabled={busy} data-initial-focus /></label>
-        : <p className="break-words text-sm">Vas a eliminar <strong>{event.name}</strong> y todas sus solicitudes. El enlace del QR dejará de funcionar. Esta acción no se puede deshacer.</p>}
+        : <p className="break-words text-sm">Vas a eliminar <strong>{event.name}</strong> y todas sus solicitudes. Si hay un sorteo, también se eliminarán sus participantes y el resultado. El enlace del QR dejará de funcionar. Esta acción no se puede deshacer.</p>}
       {error && <Notice error>{error}</Notice>}
       <div className="flex flex-wrap gap-3">
         <button className="button secondary" type="button" disabled={busy} onClick={closeControls}

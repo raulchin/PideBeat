@@ -54,6 +54,7 @@ function EventDetail({ id }: { id: string }) {
           <Link className={`button ${cabin ? 'secondary' : 'primary'}`} to={cabin ? eventPath : `${eventPath}?modo=cabina`}>
             {cabin ? 'Volver al panel' : 'Modo Cabina'}
           </Link>
+          {!cabin && <Link className="button secondary" to={`${eventPath}/sorteo`}>Sorteo</Link>}
           {!cabin && event.is_active && <button className="button danger" disabled={busy} onClick={() => void close()}>{busy ? 'Cerrando…' : 'Cerrar evento'}</button>}
         </div>
       </div>
