@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { useParams } from 'react-router'
-import { brand } from '../../config/brand'
 import { BrandLogo } from '../../components/BrandLogo'
+import { SiteFooter } from '../../components/SiteFooter'
 import { getPublicEvent, PublicError, submitSong, type Submission } from '../../lib/api'
 import { errorMessage, validateText } from '../../lib/validation'
 import type { PublicEvent } from '../../types/database'
@@ -52,9 +52,9 @@ function GuestEvent({ code }: { code: string }) {
       if (error instanceof PublicError && ['INVALID_INPUT', 'RATE_LIMITED', 'EVENT_NOT_FOUND', 'EVENT_CLOSED'].includes(error.code)) setPending(null)
     } finally { submitting.current = false; setBusy(false) }
   }
-  return <main className="guest-shell">
+  return <div className="guest-shell">
     <div className="guest-top"><BrandLogo /><span className="eyebrow m-0">DESDE LA PISTA</span></div>
-    <section className="guest-panel">
+    <main className="guest-panel">
       <div className="mb-8 flex items-end gap-1" aria-hidden="true">{[18, 35, 24, 48, 32, 56, 22, 38, 16].map((height, i) => <span key={i} className="w-2 rounded-sm bg-lime" style={{ height }} />)}</div>
       {loading ? <Loading /> : !event ? <><h1 className="text-3xl font-bold">No podemos abrir la pista.</h1>{error && <Notice error>{error}</Notice>}<button className="button secondary mt-5" onClick={() => setAttempt(value => value + 1)}>Volver a intentar</button></> : <>
         <p className="eyebrow">{event.is_active ? 'SOLICITUDES ABIERTAS' : 'SESIÓN FINALIZADA'}</p><h1 className="break-words text-3xl font-bold tracking-tight sm:text-4xl">{event.name}</h1>
@@ -74,6 +74,7 @@ function GuestEvent({ code }: { code: string }) {
           <p className="mt-6 text-xs leading-relaxed text-muted">Sin cuenta, sin instalaciones. Solo música.<br />Las solicitudes están sujetas a la selección del DJ y a límites antispam.</p>
         </>}
       </>}
-    </section><p className="mt-8 text-center text-xs text-muted">{brand.slogan}.</p>
-  </main>
+    </main>
+    <SiteFooter variant="guest" />
+  </div>
 }

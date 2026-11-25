@@ -10,7 +10,7 @@ export function RaffleWinnerPage() {
 function Winner({ eventId }: { eventId: string }) {
   const { view, loading, error, refresh } = useRaffle(eventId)
   const link = <Link className="button secondary" to={`/dj/event/${eventId}/sorteo`}>Volver al sorteo</Link>
-  return <main className="mx-auto flex min-h-dvh max-w-5xl flex-col items-center justify-center gap-6 px-6 py-12 text-center">
+  return <main className="mx-auto flex w-full max-w-5xl grow flex-col items-center justify-center gap-6 px-6 py-12 text-center">
     {loading ? <Loading /> : error || !view?.draw || !view.raffle ? <>
       <Notice error={Boolean(error)}>{error || 'No hay un resultado disponible para proyectar.'}</Notice>
       <button type="button" className="button secondary" onClick={refresh}>Actualizar resultado</button>

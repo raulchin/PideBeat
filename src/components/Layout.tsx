@@ -5,8 +5,9 @@ import { supabase } from '../lib/supabase'
 import { useSession } from '../features/auth/session'
 import { DjAccountMenu } from '../features/auth/DjAccountMenu'
 import { BrandLogo } from './BrandLogo'
+import { SiteFooter } from './SiteFooter'
 
-export function Layout() {
+export function Layout({ showFooter = true }: { showFooter?: boolean }) {
   const { session } = useSession()
   const dashboard = useMatch('/dj/dashboard')
   const eventDetail = useMatch('/dj/event/:id')
@@ -25,7 +26,7 @@ export function Layout() {
       setSigningOut(false)
     }
   }
-  return <div className="min-h-screen">
+  return <div className={showFooter ? 'min-h-screen' : 'grow'}>
     <header className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-6 sm:px-8">
       <Link to="/" className="min-w-0" aria-label={`${brand.name}, inicio`}><BrandLogo decorative /></Link>
       <nav className="flex shrink-0 items-center gap-3 text-sm sm:gap-4" aria-label="Principal">
@@ -38,7 +39,7 @@ export function Layout() {
       </nav>
     </header>
     <main className="mx-auto max-w-6xl px-5 pb-16 pt-8 sm:px-8">{error && <Notice error>{error}</Notice>}<Outlet /></main>
-    <footer className="mx-auto flex max-w-6xl flex-wrap justify-between gap-3 border-t border-line px-5 py-6 text-xs text-muted sm:px-8"><span>{brand.name} / La música la hacemos entre todos.</span><span>Sin instalaciones. Solo ritmo.</span></footer>
+    {showFooter && <SiteFooter />}
   </div>
 }
 export function Notice({ children, error = false }: { children: React.ReactNode; error?: boolean }) {

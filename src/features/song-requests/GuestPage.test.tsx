@@ -43,6 +43,11 @@ describe('GuestPage', () => {
     await openEvent()
     expect(getPublicEvent).toHaveBeenCalledWith('public-code-a')
     expect(screen.getByRole('button', { name: /Solicitar canción/ })).toBeEnabled()
+    const footer = screen.getByRole('contentinfo')
+    expect(footer).toHaveTextContent('PideBeat · Creado por DJ-Dev')
+    expect(footer).toHaveTextContent('Con apoyo de IA')
+    expect(footer.closest('form')).toBeNull()
+    expect(screen.getByRole('main')).not.toContainElement(footer)
   })
 
   it('solo confirma al resolver el servidor y bloquea dos submits en el mismo turno', async () => {

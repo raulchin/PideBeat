@@ -1,6 +1,7 @@
 import { Link, Navigate, Outlet, Route, Routes } from 'react-router'
 import { Layout, Loading, Notice } from '../components/Layout'
 import { BrandLogo } from '../components/BrandLogo'
+import { DjLayout } from '../components/DjLayout'
 import { configured } from '../lib/supabase'
 import { useSession } from '../features/auth/session'
 import { LoginPage } from '../features/auth/LoginPage'
@@ -34,16 +35,18 @@ export function App() {
   return <Routes>
     <Route path="/e/:publicCode" element={<GuestPage />} />
     <Route element={<PrivateRoute />}>
-      <Route path="/dj/event/:id/sorteo/ganador" element={<RaffleWinnerPage />} />
+      <Route element={<DjLayout />}>
+        <Route element={<Layout showFooter={false} />}>
+          <Route path="/dj/dashboard" element={<DashboardPage />} />
+          <Route path="/dj/event/:id" element={<EventPage />} />
+          <Route path="/dj/event/:id/sorteo" element={<RafflePage />} />
+        </Route>
+        <Route path="/dj/event/:id/sorteo/ganador" element={<RaffleWinnerPage />} />
+      </Route>
     </Route>
     <Route element={<Layout />}>
       <Route index element={<HomePage />} />
       <Route path="/dj/login" element={<LoginPage />} />
-      <Route element={<PrivateRoute />}>
-        <Route path="/dj/dashboard" element={<DashboardPage />} />
-        <Route path="/dj/event/:id" element={<EventPage />} />
-        <Route path="/dj/event/:id/sorteo" element={<RafflePage />} />
-      </Route>
       <Route path="*" element={<section className="py-20"><p className="eyebrow">404 / FUERA DE LA PISTA</p><h1 className="mb-8 text-4xl font-bold">Esta página no está en la sesión.</h1><Link className="button primary" to="/">Volver al inicio</Link></section>} />
     </Route>
   </Routes>

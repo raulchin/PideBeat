@@ -107,5 +107,7 @@ describe('Menú de cuenta DJ', () => {
     expect(screen.queryByRole('button', { name: /Menú de cuenta/ })).not.toBeInTheDocument()
     expect(screen.queryByText('luna@example.test')).not.toBeInTheDocument()
     expect(screen.getByRole('button', { name: 'Salir' })).toBeVisible()
+    expect(screen.getByRole('contentinfo')).toHaveTextContent('Sin instalaciones. Solo ritmo.')
+    expect(screen.queryByText(/Desarrollado por/)).not.toBeInTheDocument()
   })
 })
